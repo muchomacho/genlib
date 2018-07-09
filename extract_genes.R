@@ -1,4 +1,4 @@
-# extract genes from input genomic regions and write those Entrez gene IDs into putput file
+# extract genes from input genomic regions and write those Entrez gene IDs into output file
 # -----------------
 # Parameter
 #
