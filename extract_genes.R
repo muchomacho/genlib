@@ -6,8 +6,8 @@
 # one genomic region is written in each line (ex. X:10000:11000)
 # output: String
 # output file in which the list of gene ID will be written
-# chr: String(ex. 'chr5')
-# target chromosome name
+# chr: String
+# target chromosome name (ex. 'chr5')
 # if this parameter is skipped, the whole input genomic regions are used for extraction
 extract_genes <- function(input, output, chr=NA){
   library(Homo.sapiens)
