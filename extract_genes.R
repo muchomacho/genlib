@@ -1,4 +1,10 @@
 # extract genes from input genomic regions and write those Entrez gene IDs into output file
+
+# required libraries
+# -----------------
+# Homo.sapiens
+# dplyr
+#
 # -----------------
 # Parameter
 #
