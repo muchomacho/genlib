@@ -17,7 +17,7 @@ fn main() {
     let mut bytes;
     let mut line = Vec::new();
     bytes = reader.read_until(b'\n', &mut line).unwrap();
-    if line[0] != b'<' {
+    if bytes == 0 || line[0] != b'<' {
         panic!("input file is not a fasta file.");
     }
     loop {
