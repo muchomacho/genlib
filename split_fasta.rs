@@ -8,6 +8,7 @@ use std::fs::File;
 use std::env;
 
 // This script divides one fasta file into multiple files by headers
+// Used to create a fasta file which only contains 24 chromosome information
 
 fn main() {
     let input = get_param();
