@@ -8,7 +8,7 @@ while getopts "r:o:" opt; do
     case $opt in
 	r) reference_fasta_file=$OPTARG ;;
     o) output_fasta_file=$OPTARG ;;
-	[?]) echo "Usage: ${0##*/} [-r reference_fasta_file] [-o output_fasta_file]\n";exit "&1" ;;
+	[?]) echo "Usage: ${0##*/} [-r reference_fasta_file] [-o output_fasta_file]";exit ;;
     esac
 done
 
