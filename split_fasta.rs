@@ -10,11 +10,13 @@ use std::env;
 // This script divides one fasta file into multiple files by the sequence
 // Used to create a fasta file which only contains 24 chromosome information
 
+static BUF_SIZE: usize = 1024 * 1024 * 10;
+
 fn main() {
     // open target fasta file
     let input = get_param();
     let f = File::open(input).unwrap();
-    let mut reader = BufReader::new(f);
+    let mut reader = BufReader::with_capacity(BUF_SIZE, f);
 
     // read file by the line
     let mut bytes;
@@ -62,17 +64,19 @@ fn main() {
 
         // create a file and write sequence
         let write_f = File::create(String::from_utf8_lossy(&line[1..(line.len() - 1)]).to_string() + ".fasta").unwrap();
-        let mut writer = BufWriter::new(write_f);
+        let mut writer = BufWriter::with_capacity(BUF_SIZE, write_f);
         writer.write(&line[..]).unwrap();
         line.clear();
         loop {
             bytes = reader.read_until(b'\n', &mut line).unwrap();
             // EOF of input file
             if bytes == 0 {
+                let _ok = writer.flush().unwrap();
                 break 'outer;
             }
             // new sequence
             if line[0] == b'>' {
+                let _ok = writer.flush().unwrap();
                 continue 'outer;
             }
             writer.write(&line[..]).unwrap();
@@ -86,4 +90,4 @@ fn get_param() -> String {
     return args.into_iter().nth(1).unwrap();
 }
 
-fn is_delim(b: u8) -> bool { b == b'\n' || b == b'\r' || b == b'\t' || b == b' ' || b == b';' }
+fn is_delim(b: u8) -> bool { b == b'\r' || b == b'\t' || b == b' ' || b == b';' }
