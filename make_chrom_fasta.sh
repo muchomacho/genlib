@@ -3,6 +3,7 @@
 # This script makes fasta file which only contains chromosome sequence from human reference fasta file
 # Usage: ./make_chrom_fasta.sh [-r reference_fasta_file] [-o output_fasta_file]
 shopt -s extglob
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 while getopts "r:o:" opt; do
     case $opt in
@@ -12,6 +13,7 @@ while getopts "r:o:" opt; do
     esac
 done
 
+cd DIR
 rustc -O split_fasta.rs
 mkdir _tmpdir
 cd _tmpdir
