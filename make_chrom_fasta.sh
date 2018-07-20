@@ -16,14 +16,11 @@ SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 REF_DIR="$( cd "$( dirname "${REF}" )" >/dev/null && pwd )"
 OUT_DIR="$( cd "$( dirname "${OUT}" )" >/dev/null && pwd )"
 
-echo ${SRC_DIR}
-echo ${REF_DIR}
-echo ${OUT_DIR}
-
 cd $SRC_DIR
 rustc -O split_fasta.rs
 mkdir _tmpdir
 cd _tmpdir
+echo "../split_fasta ${REF_DIR}/$( basename REF )"
 ../split_fasta ${REF_DIR}/$( basename REF )
 
 for num in $( seq 22 ) "X" "Y"
