@@ -13,7 +13,7 @@ while getopts "r:o:" opt; do
     esac
 done
 
-cd DIR
+cd $DIR
 rustc -O split_fasta.rs
 mkdir _tmpdir
 cd _tmpdir
@@ -26,4 +26,4 @@ done
 
 cd ..
 rm split_fasta
-rm -r tmpdir
+rm -r _tmpdir
