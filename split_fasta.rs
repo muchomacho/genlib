@@ -7,6 +7,7 @@ use std::fs::File;
 #[allow(unused_imports)]
 use std::env;
 
+// todo: use trim to delete leading and trailing whitespaces 
 // This script divides one fasta file into multiple files by the sequence
 // Used to create a fasta file which only contains 24 chromosome information
 
