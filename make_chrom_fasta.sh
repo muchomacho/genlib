@@ -12,9 +12,9 @@ while getopts "r:o:" opt; do
     esac
 done
 
-SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-REF_DIR="$( cd "$( dirname "${reference_fasta_file}" )" >/dev/null && pwd )"
-OUT_DIR="$( cd "$( dirname "${output_fasta_file}" )" >/dev/null && pwd )"
+SRC_DIR="$( cd $( dirname ${BASH_SOURCE[0]} ) >/dev/null && pwd )"
+REF_DIR="$( cd $( dirname ${reference_fasta_file} ) >/dev/null && pwd )"
+OUT_DIR="$( cd $( dirname ${output_fasta_file} ) >/dev/null && pwd )"
 
 cd $SRC_DIR
 rustc -O split_fasta.rs
