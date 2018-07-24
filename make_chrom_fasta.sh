@@ -22,8 +22,7 @@ mkdir _tmpdir
 cd _tmpdir
 ../split_fasta ${REF_DIR}/$( basename ${reference_fasta_file} )
 
-for num in $( seq 22 ) "X" "Y"
-do
+for num in $( seq 22 ) "X" "Y"; do
     cat chr${num}.fasta >> ${OUT_DIR}/$( basename ${output_fasta_file} )
 done
 
