@@ -27,7 +27,9 @@ type GRange = (usize, usize);
 // path for output file
 // each line contains one gene ID
 
-// todo: revise read_to_string error handling
+// Todo: 
+// revise read_to_string error handling
+
 fn main() {
     let (gene_file, input, output) = get_param();
     // open gene list file
@@ -97,8 +99,9 @@ fn main() {
     let write_f = File::create(output).unwrap();
     let mut writer = BufWriter::with_capacity(BUF_SIZE, write_f);
     for gene in contained_genes.iter() {
-        write!(writer, "{}\n", gene).unwrap();
+        writeln!(&mut writer, "{}", gene).unwrap();
     }
+    writer.flush().unwrap();
 }
 
 fn get_param() -> (String, String, String) {
