@@ -1,6 +1,3 @@
-// This script receives sequence reads in BED format and counts the number of reads at given window size
-// Usage: ./count_reads [input BED file path] [genome reference type <hg19/hg38>] [MAPQ threshold] [window size] [output dir path]
-
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write, BufReader, BufWriter};
 #[allow(unused_imports)]
@@ -17,6 +14,9 @@ use std::collections::{VecDeque, HashSet, BTreeSet, BinaryHeap, HashMap};
 static BUF_SIZE: usize = 100 * 1024 * 1024;
 // expected size of each line is less than 300 bytes
 static LINE_SIZE: usize = 300;
+
+// This script receives sequence reads in BED format and counts the number of reads at given window size
+// Usage: ./count_reads [input BED file path] [genome reference type <hg19/hg38>] [MAPQ threshold] [window size] [output dir path]
 
 fn main() {
     // get parameter
