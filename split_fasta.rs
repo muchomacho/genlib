@@ -7,13 +7,13 @@ Usage: split_fasta [input FASTA file]
 */
 
 #[allow(unused_imports)]
-use std::fs::File;
-#[allow(unused_imports)]
 use std::env;
 #[allow(unused_imports)]
-use std::io::{stdin, stdout, Write, BufReader, BufWriter};
+use std::fs::File;
 #[allow(unused_imports)]
 use std::io::prelude::BufRead;
+#[allow(unused_imports)]
+use std::io::{stdin, stdout, BufReader, BufWriter, Write};
 
 // read/write buffer size
 static BUF_SIZE: usize = 1024 * 1024 * 10;
@@ -47,8 +47,7 @@ fn main() {
             .trim()
             .replace(" ", "_")
             .replace("\t", "_")
-            .replace(";", "_")
-            + ".fasta";
+            .replace(";", "_") + ".fasta";
         // create a split FASTA file
         let write_f = File::create(file_name).unwrap();
         let mut writer = BufWriter::with_capacity(BUF_SIZE, write_f);
@@ -73,7 +72,6 @@ fn main() {
         }
     }
 }
-
 
 fn get_param() -> String {
     let args: Vec<String> = env::args().collect();

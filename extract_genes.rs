@@ -21,15 +21,15 @@ each line contains one gene ID
 */
 
 #[allow(unused_imports)]
-use std::io::{stdin, stdout, Write, BufReader, BufWriter};
-#[allow(unused_imports)]
-use std::io::prelude::*;
-#[allow(unused_imports)]
-use std::fs::File;
+use std::collections::{BTreeSet, BinaryHeap, HashMap, HashSet, VecDeque};
 #[allow(unused_imports)]
 use std::env;
 #[allow(unused_imports)]
-use std::collections::{VecDeque, HashSet, BTreeSet, BinaryHeap, HashMap};
+use std::fs::File;
+#[allow(unused_imports)]
+use std::io::prelude::*;
+#[allow(unused_imports)]
+use std::io::{stdin, stdout, BufReader, BufWriter, Write};
 
 static BUF_SIZE: usize = 10 * 1024 * 1024;
 type GRange = (usize, usize);
@@ -41,20 +41,20 @@ fn main() {
     let mut reader = BufReader::with_capacity(BUF_SIZE, f);
     // hash for mapping chromosome name to the index which corresponds to it
     let mut chrom_to_index: HashMap<String, usize> = HashMap::new();
-    // chromosome gene lists 
+    // chromosome gene lists
     let mut gene_lists: Vec<Vec<(String, GRange)>> = Vec::new();
     // read a file and process each line
     let mut line = String::with_capacity(500);
     while reader.read_line(&mut line).unwrap() > 0 {
         {
             // split line with whitespace
-            let vec: Vec<&str> = line
-                .trim()
-                .split_whitespace()
-                .collect();
+            let vec: Vec<&str> = line.trim().split_whitespace().collect();
             // push (gene_name, region) tuple to the matched chromosome gene list
-            let gene_name = vec[1].to_string(); 
-            let region = (vec[4].parse::<usize>().unwrap(), vec[5].parse::<usize>().unwrap());
+            let gene_name = vec[1].to_string();
+            let region = (
+                vec[4].parse::<usize>().unwrap(),
+                vec[5].parse::<usize>().unwrap(),
+            );
             if let Some(&index) = chrom_to_index.get(vec[2]) {
                 gene_lists[index].push((gene_name, region));
             } else {
@@ -76,13 +76,13 @@ fn main() {
     while reader.read_line(&mut line).unwrap() > 0 {
         {
             // split line with whitespace
-            let vec: Vec<&str> = line
-                .trim()
-                .split_whitespace()
-                .collect();
+            let vec: Vec<&str> = line.trim().split_whitespace().collect();
             // check whether each gene exists within the query region
             if let Some(&index) = chrom_to_index.get(vec[0]) {
-                let (start, end) = (vec[1].parse::<usize>().unwrap(), vec[2].parse::<usize>().unwrap());        
+                let (start, end) = (
+                    vec[1].parse::<usize>().unwrap(),
+                    vec[2].parse::<usize>().unwrap(),
+                );
                 for &(ref name, ref range) in gene_lists[index].iter() {
                     if range.1 >= start && range.0 <= end {
                         contained_genes.push(name.clone());
@@ -116,4 +116,3 @@ fn get_param() -> (String, String, String) {
     let gene = args.pop().unwrap();
     return (gene, input, output);
 }
-
