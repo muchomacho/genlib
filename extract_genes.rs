@@ -1,3 +1,25 @@
+/* This scripts receives chromosomal regions and extracts genes which exist within these regions.
+
+Usage: extract_genes [Gene_file_path][Input_file_path] [Output_file_path]
+
+
+Parameter
+
+Gene_file_path: String
+path for gene list BED file
+download preferable gene list file from UCSC table brouser (ex: hg19/hg38, gencode/refseq)
+
+Input_file_path: String
+path for BED file which contains [chrom, chromStart, and chromEnd] in each line (with or without a header)
+reference genome version must be the same as the gene list file
+ex) chrX    100000  150000
+
+Output_file_path: String
+path for output file
+each line contains one gene ID
+
+*/
+
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write, BufReader, BufWriter};
 #[allow(unused_imports)]
@@ -6,94 +28,74 @@ use std::io::prelude::*;
 use std::fs::File;
 #[allow(unused_imports)]
 use std::env;
+#[allow(unused_imports)]
+use std::collections::{VecDeque, HashSet, BTreeSet, BinaryHeap, HashMap};
 
-static BUF_SIZE: usize = 1024 * 1024 * 10;
+static BUF_SIZE: usize = 10 * 1024 * 1024;
 type GRange = (usize, usize);
-
-// This scripts accepts chromosomal regions and extracts genes which exist within these regions.
-//
-// Usage: ./extract_genes [gene_file_path][input_file_path] [output_file_path]
-//
-// gene_file_path: String
-// path for gene list BED file
-// download preferable gene list file from UCSC table brouser (hg19/hg38, gencode/refseq)
-//
-// input_file_path: String
-// path for BED file which contains [chrom, chromStart, and chromEnd] in each line (with or without a header)
-// reference genome version must be the same as the gene list file
-// ex) chrX    100000  150000
-//
-// output_file_path: String
-// path for output file
-// each line contains one gene ID
-
-// Todo: 
-// revise read_to_string error handling
 
 fn main() {
     let (gene_file, input, output) = get_param();
     // open gene list file
-    let mut gene_f = File::open(gene_file).unwrap();
+    let f = File::open(gene_file).unwrap();
+    let mut reader = BufReader::with_capacity(BUF_SIZE, f);
+    // hash for mapping chromosome name to the index which corresponds to it
+    let mut chrom_to_index: HashMap<String, usize> = HashMap::new();
     // chromosome gene lists 
-    let mut buffer = String::new();
-    let _bytes = gene_f.read_to_string(&mut buffer).unwrap();
-    let mut gene_lists: Vec<Vec<(String, GRange)>> = vec![Vec::new(); 24];
+    let mut gene_lists: Vec<Vec<(String, GRange)>> = Vec::new();
     // read a file and process each line
-    for line in buffer.lines() {
-        // split line with '\t'
-        let vec: Vec<&str> = line
-            .trim()
-            .split('\t')
-            .map(|s| s.trim())
-            .collect();
-        // push (gene_name, region) tuple to the matched chromosome gene list
-        let gene_name = vec[1].to_string(); 
-        let region = (vec[4].parse::<usize>().unwrap(), vec[5].parse::<usize>().unwrap());
-        let chrom: &str = vec[2].split("chr").nth(1).unwrap();
-        match chrom {
-            "X" => gene_lists[22].push((gene_name, region)),
-            "Y" => gene_lists[23].push((gene_name, region)),
-            _ => if let Ok(num) = chrom.parse::<usize>() { gene_lists[num - 1].push((gene_name, region)) },
-        };
+    let mut line = String::with_capacity(500);
+    while reader.read_line(&mut line).unwrap() > 0 {
+        {
+            // split line with whitespace
+            let vec: Vec<&str> = line
+                .trim()
+                .split_whitespace()
+                .collect();
+            // push (gene_name, region) tuple to the matched chromosome gene list
+            let gene_name = vec[1].to_string(); 
+            let region = (vec[4].parse::<usize>().unwrap(), vec[5].parse::<usize>().unwrap());
+            if let Some(&index) = chrom_to_index.get(vec[2]) {
+                gene_lists[index].push((gene_name, region));
+            } else {
+                gene_lists.push(vec![(gene_name, region)]);
+                chrom_to_index.insert(vec[2].to_string(), gene_lists.len() - 1);
+            }
+        }
+        line.clear();
     }
-    drop(buffer);
+    drop(reader);
 
     // open input file
-    let mut input_f = File::open(input).unwrap();
+    let f = File::open(input).unwrap();
+    let mut reader = BufReader::with_capacity(BUF_SIZE, f);
     // list for genes which exist within query regions
     let mut contained_genes = Vec::new();
     // read a file and process by the line
-    let mut buffer = String::new();
-    let _bytes = input_f.read_to_string(&mut buffer).unwrap();
-    for line in buffer.lines() {
-        // split line with '\t'
-        let vec: Vec<&str> = line
-            .trim()
-            .split('\t')
-            .map(|s| s.trim())
-            .collect();
-        // check whether each gene exists within the query region
-        let chrom = vec[0].split("chr").nth(1).unwrap();
-        let mut num = 24;
-        match chrom {
-            "X" => num = 22,
-            "Y" => num = 23,
-            _ => if let Ok(n) = vec[0].parse::<usize>() { num = n - 1 },
-        };
-        if num == 24 {
-            continue;
-        }
-        let (start, end) = (vec[1].parse::<usize>().unwrap(), vec[2].parse::<usize>().unwrap());        
-        for &(ref name, ref range) in gene_lists[num].iter() {
-            if range.1 >= start && range.0 <= end {
-                contained_genes.push(name.clone());
+    let mut line = String::with_capacity(100);
+    while reader.read_line(&mut line).unwrap() > 0 {
+        {
+            // split line with whitespace
+            let vec: Vec<&str> = line
+                .trim()
+                .split_whitespace()
+                .collect();
+            // check whether each gene exists within the query region
+            if let Some(&index) = chrom_to_index.get(vec[0]) {
+                let (start, end) = (vec[1].parse::<usize>().unwrap(), vec[2].parse::<usize>().unwrap());        
+                for &(ref name, ref range) in gene_lists[index].iter() {
+                    if range.1 >= start && range.0 <= end {
+                        contained_genes.push(name.clone());
+                    }
+                }
             }
         }
+        line.clear();
     }
+    drop(reader);
     // delete redundant elements
     contained_genes.sort();
     contained_genes.dedup();
-    drop(buffer);
 
     // write the result to output file
     let write_f = File::create(output).unwrap();
