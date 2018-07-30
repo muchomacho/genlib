@@ -14,7 +14,10 @@ import numpy as np
 corrected = read_vector(sys.argv[1])
 reference = read_vector(sys.argv[2])
 
-if np.corrcoef(corrected, reference)[0, 1] < 0:
+corr = np.corrcoef(corrected, reference)[0, 1]
+print("correlation coefficient = ", corr)
+
+if corr < 0:
     corrected *= -1.0
 
 write_vector(sys.argv[3], corrected)
