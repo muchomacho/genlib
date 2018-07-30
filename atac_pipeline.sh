@@ -12,11 +12,11 @@ done
 
 cd dir
 mkdir _tmp
-cd _tmp
-for file in $( ls ../*_*_L001_* ); do
-    cat ../${file} ../$( echo ${file} | sed s/L001/L002/ ) > $( echo ${file} | sed s/_L001// )
+for file in $( ls *_*_L001_* ); do
+    cat ${file} $( echo ${file} | sed s/L001/L002/ ) > _tmp/$( echo ${file} | sed s/_L001// )
 done
 
+cd _tmp
 for file in $( ls *_*_R1_* ); do
     ~/bwa/bwa mem -t 32 reference_fasta_file ${file} $( echo ${file} | sed s/R1/R2/ ) > $( echo ${file} | sed s/_R1// ).sam
 done
