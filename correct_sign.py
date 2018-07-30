@@ -11,17 +11,6 @@ two vectors must have the same size
 import sys
 import numpy as np
 
-corrected = read_vector(sys.argv[1])
-reference = read_vector(sys.argv[2])
-
-corr = np.corrcoef(corrected, reference)[0, 1]
-print("correlation coefficient = ", corr)
-
-if corr < 0:
-    corrected *= -1.0
-
-write_vector(sys.argv[3], corrected)
-
 def read_vector(path):
     f = open(path)
     vec = []
@@ -34,3 +23,15 @@ def write_vector(path, vector):
     f = open(path)
     f.write('\n'.join([str(x) for x in vector]))
     f.close()
+
+corrected = read_vector(sys.argv[1])
+reference = read_vector(sys.argv[2])
+
+corr = np.corrcoef(corrected, reference)[0, 1]
+print(sys.argv[1], sys.argv[2])
+print("correlation coefficient = ", corr)
+
+if corr < 0:
+    corrected *= -1.0
+
+write_vector(sys.argv[3], corrected)
