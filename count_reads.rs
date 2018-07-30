@@ -1,24 +1,27 @@
-// This script receives sequence reads in BED[6/12] format and counts the number of reads at given window size
-// Usage: ./count_reads [Input BED file path] [Genome reference type <hg19/hg38>] [MAPQ threshold] [Window size] [Output dir path]
-//
-//
-// Parameter
-//
-// Input BED file path: String
-// sequence read file
-//
-// Genome reference type: hg19 or hg38
-// currently available for human genome references
-//
-// MAPQ threshold: Int
-// sequence reads with MAPQ value >= threshold are used for counting
-//
-// Window size: Int(bp)
-// Chromosome bin size
-//
-// Output dir path: String
-// the result files of all chromosomes are created under this directory
-// 
+/*
+
+This script receives sequence reads in BED[6/12] format and counts the number of reads at given window size
+Usage: ./count_reads [Input BED file path] [Genome reference type <hg19/hg38>] [MAPQ threshold] [Window size] [Output dir path]
+
+
+Parameter
+
+Input BED file path: String
+sequence read file
+
+Genome reference type: hg19 or hg38
+currently available for human genome references
+
+MAPQ threshold: Int
+sequence reads with MAPQ value >= threshold are used for counting
+
+Window size: Int(bp)
+Chromosome bin size
+
+Output dir path: String
+the result files of all chromosomes are created under this directory
+ 
+ */
 
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write, BufReader, BufWriter};
