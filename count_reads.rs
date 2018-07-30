@@ -56,17 +56,17 @@ fn main() {
     let mut chrom_to_index: HashMap<String, usize> = HashMap::new();
     // read chromosome lengths
     let mut index = 0;
-    let mut buffer = String::with_capacity(50);
-    while reader.read_line(&mut buffer).unwrap() > 0 {
+    let mut line = String::with_capacity(50);
+    while reader.read_line(&mut line).unwrap() > 0 {
         {
-            let elems: Vec<&str> = buffer.trim().split('\t').collect();
+            let elems: Vec<&str> = line.trim().split('\t').collect();
             let chrom_name = elems[0].to_string();
             let chrom_length = (elems[1].parse::<usize>().unwrap() / window) + 1;
             chrom_to_index.insert(chrom_name, index);
             read_count.push(vec![0; chrom_length]);
         }
         index += 1;
-        buffer.clear();
+        line.clear();
     }
     drop(reader);
 
@@ -76,12 +76,10 @@ fn main() {
     // read each line and count reads
     // in sequence read file of BED 6/12 format, each line is written as follows
     // [chrom] [chromStart] [chromEnd] [Name] [MAPQ] [Strand] ...
-    let mut buffer = String::with_capacity(LINE_SIZE);
-    let mut count = 0;
-    while reader.read_line(&mut buffer).unwrap() > 0 {
+    let mut line = String::with_capacity(LINE_SIZE);
+    while reader.read_line(&mut line).unwrap() > 0 {
         {
-            let elems: Vec<&str> = buffer.trim().split_whitespace().collect();
-            let chrom_name = elems[0];
+            let elems: Vec<&str> = line.trim().split_whitespace().collect();
             let q = elems[4].parse::<usize>().unwrap();
             // select reads MAPQ >= q_threshold
             if q >= q_threshold {
@@ -89,15 +87,13 @@ fn main() {
                 let start = elems[1].parse::<usize>().unwrap();
                 let end = elems[2].parse::<usize>().unwrap();
                 let middle = (start + end) / (2 * window);
-                if let Some(&index) = chrom_to_index.get(chrom_name) {
+                if let Some(&index) = chrom_to_index.get(elems[0]) {
                     read_count[index][middle] += 1;
                 }
-                count += 1;
             }
         }
-        buffer.clear();
+        line.clear();
     }
-    println!("{}", count);
     drop(reader);
 
     // output result to file
