@@ -1,3 +1,25 @@
+// This script receives sequence reads in BED[6/12] format and counts the number of reads at given window size
+// Usage: ./count_reads [Input BED file path] [Genome reference type <hg19/hg38>] [MAPQ threshold] [Window size] [Output dir path]
+//
+//
+// Parameter
+//
+// Input BED file path: String
+// sequence read file
+//
+// Genome reference type: hg19 or hg38
+// currently available for human genome references
+//
+// MAPQ threshold: Int
+// sequence reads with MAPQ value >= threshold are used for counting
+//
+// Window size: Int(bp)
+// Chromosome bin size
+//
+// Output dir path: String
+// the result files of all chromosomes are created under this directory
+// 
+
 #[allow(unused_imports)]
 use std::io::{stdin, stdout, Write, BufReader, BufWriter};
 #[allow(unused_imports)]
@@ -15,16 +37,13 @@ static BUF_SIZE: usize = 100 * 1024 * 1024;
 // expected size of each line is less than 300 bytes
 static LINE_SIZE: usize = 300;
 
-// This script receives sequence reads in BED format and counts the number of reads at given window size
-// Usage: ./count_reads [input BED file path] [genome reference type <hg19/hg38>] [MAPQ threshold] [window size] [output dir path]
-
 fn main() {
     // get parameter
     let (src_dir, input_path, reference, q_threshold, window, output_dir) = get_param();
     // open chromosome size file
     let f = if reference == "hg19" { File::open(src_dir + "data/hg19_chrom_size.txt").unwrap() }
             else { File::open(src_dir + "data/hg38_chrom_size.txt").unwrap() };
-    let mut reader = BufReader::with_capacity(10 * 1024, f);
+    let mut reader = BufReader::with_capacity(1024, f);
     // vector for counting reads
     let mut read_count: Vec<Vec<usize>> = Vec::new();
     // hash for mapping chromosome name to the index which corresponds to it
@@ -39,8 +58,8 @@ fn main() {
             let chrom_length = (elems[1].parse::<usize>().unwrap() / window) + 1;
             chrom_to_index.insert(chrom_name, index);
             read_count.push(vec![0; chrom_length]);
-            index += 1;
         }
+        index += 1;
         buffer.clear();
     }
     drop(reader);
@@ -81,12 +100,13 @@ fn main() {
         for &c in read_count[index].iter() {
             writeln!(&mut writer, "{}", c).unwrap();
         }
+        writer.flush().unwrap();
     }
 }
 
 fn get_param() -> (String, String, String, usize, usize, String) {
     let mut params: Vec<String> = env::args().collect();
-    if params.len() != 7 {
+    if params.len() != 6 {
         panic!("Invalid arguments.");
     }
 
