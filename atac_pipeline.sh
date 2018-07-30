@@ -10,7 +10,7 @@ while getopts "d:r:" opt; do
     esac
 done
 
-cd dir
+cd ${dir}
 mkdir _tmp
 for file in $( ls *_*_L001_* ); do
     cat ${file} $( echo ${file} | sed s/L001/L002/ ) > _tmp/$( echo ${file} | sed s/_L001// )
