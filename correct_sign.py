@@ -12,7 +12,7 @@ import sys
 import numpy as np
 
 def read_vector(path):
-    f = open(path)
+    f = open(path, 'r')
     vec = []
     for line in f:
         vec.append(float(line.strip()))
@@ -20,7 +20,7 @@ def read_vector(path):
     return np.array(vec)
 
 def write_vector(path, vector):
-    f = open(path)
+    f = open(path, 'w')
     f.write('\n'.join([str(x) for x in vector]))
     f.close()
 
