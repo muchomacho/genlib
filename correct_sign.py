@@ -4,6 +4,7 @@ so that the correlation coefficient of two vectors is positive
 
 Usage: python correct_sign.py [corrected vector file path] [reference vector file path] [output file path]
 
+vector file contains single elements in each line
 two vectors must have the same size
 """
 
