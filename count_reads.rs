@@ -21,21 +21,21 @@ Chromosome bin size
 Output dir path: String
 the result files of all chromosomes are created under this directory
  
- */
+*/
 
 #[allow(unused_imports)]
-use std::io::{stdin, stdout, Write, BufReader, BufWriter};
-#[allow(unused_imports)]
-use std::io::prelude::*;
-#[allow(unused_imports)]
-use std::fs::File;
+use std::collections::{BTreeSet, BinaryHeap, HashMap, HashSet, VecDeque};
 #[allow(unused_imports)]
 use std::env;
 #[allow(unused_imports)]
-use std::collections::{VecDeque, HashSet, BTreeSet, BinaryHeap, HashMap};
+use std::fs::File;
+#[allow(unused_imports)]
+use std::io::prelude::*;
+#[allow(unused_imports)]
+use std::io::{stdin, stdout, BufReader, BufWriter, Write};
 
 // read/write buffer size
-// input file size is expected to be very big 
+// input file size is expected to be very big
 static BUF_SIZE: usize = 100 * 1024 * 1024;
 // expected size of each line is less than 300 bytes
 static LINE_SIZE: usize = 300;
@@ -44,8 +44,11 @@ fn main() {
     // get parameter
     let (src_dir, input_path, reference, q_threshold, window, output_dir) = get_param();
     // open chromosome size file
-    let f = if reference == "hg19" { File::open(src_dir + "data/hg19_chrom_size.txt").unwrap() }
-            else { File::open(src_dir + "data/hg38_chrom_size.txt").unwrap() };
+    let f = if reference == "hg19" {
+        File::open(src_dir + "data/hg19_chrom_size.txt").unwrap()
+    } else {
+        File::open(src_dir + "data/hg38_chrom_size.txt").unwrap()
+    };
     let mut reader = BufReader::with_capacity(1024, f);
     // vector for counting reads
     let mut read_count: Vec<Vec<usize>> = Vec::new();
@@ -74,6 +77,7 @@ fn main() {
     // in sequence read file of BED 6/12 format, each line is written as follows
     // [chrom] [chromStart] [chromEnd] [Name] [MAPQ] [Strand] ...
     let mut buffer = String::with_capacity(LINE_SIZE);
+    let mut count = 0;
     while reader.read_line(&mut buffer).unwrap() > 0 {
         {
             let elems: Vec<&str> = buffer.trim().split_whitespace().collect();
@@ -88,10 +92,12 @@ fn main() {
                 if let Some(&index) = chrom_to_index.get(chrom_name) {
                     read_count[index][middle] += 1;
                 }
+                count += 1;
             }
         }
         buffer.clear();
     }
+    println!("{}", count);
     drop(reader);
 
     // output result to file
@@ -99,7 +105,7 @@ fn main() {
         // create file in output directory about each chromosome
         let file_path = format!("{}/{}.txt", &output_dir, &chrom_name);
         let f = File::create(file_path).unwrap();
-        let mut writer = BufWriter::with_capacity(10 * 1024 , f);
+        let mut writer = BufWriter::with_capacity(10 * 1024, f);
         for &c in read_count[index].iter() {
             writeln!(&mut writer, "{}", c).unwrap();
         }
@@ -114,9 +120,15 @@ fn get_param() -> (String, String, String, usize, usize, String) {
     }
 
     let output_dir = params.pop().unwrap();
-    let window = params.pop().unwrap().parse::<usize>()
+    let window = params
+        .pop()
+        .unwrap()
+        .parse::<usize>()
         .expect("Window size must be a positive integer");
-    let q_threshold = params.pop().unwrap().parse::<usize>()
+    let q_threshold = params
+        .pop()
+        .unwrap()
+        .parse::<usize>()
         .expect("MAPQ threshold must be a positive integer");
     let reference = params.pop().unwrap();
     if reference != "hg19" && reference != "hg38" {
@@ -128,5 +140,12 @@ fn get_param() -> (String, String, String, usize, usize, String) {
         src_path.pop();
     }
 
-    return (src_path, input_path, reference, q_threshold, window, output_dir);
+    return (
+        src_path,
+        input_path,
+        reference,
+        q_threshold,
+        window,
+        output_dir,
+    );
 }
