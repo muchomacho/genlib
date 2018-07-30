@@ -18,7 +18,7 @@ done
 
 cd _tmp
 for file in $( ls *_*_R1_* ); do
-    ~/bwa/bwa mem -t 32 reference_fasta_file ${file} $( echo ${file} | sed s/R1/R2/ ) > $( echo ${file} | sed s/_R1// ).sam
+    ~/bwa/bwa mem -t 32 ${reference_fasta_file} ${file} $( echo ${file} | sed s/R1/R2/ ) > $( echo ${file} | sed s/_R1// ).sam
 done
 
 for file in $( ls *.sam ); do
