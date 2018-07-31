@@ -35,10 +35,11 @@ valid_ref = ref[valid_indices]
 
 corr = np.corrcoef(valid_vec, valid_ref)[0, 1]
 print(sys.argv[1], sys.argv[2])
-print("correlation coefficient = ", corr)
+print("corr = ", corr)
 
 if corr < 0:
     valid_vec *= -1.0
+    print("corr after fixed = ", np.corrcoef(valid_vec, valid_ref)[0, 1])
 
 new_vec = np.array([vec.shape[0]])
 new_vec.fill(np.nan)
