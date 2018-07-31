@@ -1,7 +1,7 @@
 /*
 
 This script receives sequence reads in BED[6/12] format and counts the number of reads at given window size
-Usage: ./count_reads [Input BED file path] [Genome reference type <hg19/hg38>] [MAPQ threshold] [Window size] [Output dir path]
+Usage: count_reads [Input BED file path] [Genome reference type <hg19/hg38>] [MAPQ threshold] [Window size] [Output dir path]
 
 
 Parameter
@@ -77,6 +77,8 @@ fn main() {
     // in sequence read file of BED 6/12 format, each line is written as follows
     // [chrom] [chromStart] [chromEnd] [Name] [MAPQ] [Strand] ...
     let mut line = String::with_capacity(LINE_SIZE);
+    let mut total = 0;
+    let mut qualified = 0;
     while reader.read_line(&mut line).unwrap() > 0 {
         {
             let elems: Vec<&str> = line.trim().split_whitespace().collect();
@@ -90,11 +92,16 @@ fn main() {
                 if let Some(&index) = chrom_to_index.get(elems[0]) {
                     read_count[index][middle] += 1;
                 }
+                qualified += 1;
             }
+            total += 1;
         }
         line.clear();
     }
     drop(reader);
+
+    println!("counted reads = {}", qualified);
+    println!("percentage of qualified reads = {}", (qualified as f64) / (total as f64));
 
     // output result to file
     for (chrom_name, index) in chrom_to_index.into_iter() {
