@@ -45,6 +45,8 @@ fn main() {
     let mut gene_lists: Vec<Vec<(String, GRange)>> = Vec::new();
     // read a file and process each line
     let mut line = String::with_capacity(500);
+    let _first = reader.read_line(&mut line).unwrap();
+    line.clear();
     while reader.read_line(&mut line).unwrap() > 0 {
         {
             // split line with whitespace
