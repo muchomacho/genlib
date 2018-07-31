@@ -41,7 +41,7 @@ if corr < 0:
     valid_vec *= -1.0
     print("corr after fixed = ", np.corrcoef(valid_vec, valid_ref)[0, 1])
 
-new_vec = np.array([vec.shape[0]])
+new_vec = np.zeros([vec.shape[0]])
 new_vec.fill(np.nan)
 new_vec[valid_indices] = valid_vec
 
