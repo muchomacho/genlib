@@ -22,8 +22,8 @@ done
 tmp=".tmp"
 mkdir ${tmp}
 for file in $( ls ${dir}/*_L001* ); do
-    merged_file="${tmp}/${file/_L001/}"
-    cp ${file} ${merged_file}
+    file_name="$( basename ${file} )"
+    merged_file="${tmp}/${file_name/_L001/}"
     for lane_file in ${file/L001/L*}; do 
         cat ${lane_file} >> ${merged_file}
     done
