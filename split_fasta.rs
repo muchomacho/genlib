@@ -2,7 +2,7 @@
 
 This script divides one fasta file into multiple files by the sequence
 Used to create a fasta file which only contains 24 chromosome information
-Usage: split_fasta [input FASTA file]
+Usage: split_fasta [input FASTA file] [output directory]
 
 */
 
@@ -23,7 +23,7 @@ static LINE_SIZE: usize = 150;
 
 fn main() {
     // open target fasta file
-    let input = get_param();
+    let (input, out_dir) = get_param();
     let f = File::open(input).unwrap();
     let mut reader = BufReader::with_capacity(BUF_SIZE, f);
 
@@ -47,9 +47,9 @@ fn main() {
             .trim()
             .replace(" ", "_")
             .replace("\t", "_")
-            .replace(";", "_") + ".fasta";
+            .replace(";", "_");
         // create a split FASTA file
-        let write_f = File::create(file_name).unwrap();
+        let write_f = File::create(format!("{}/{}.fasta", &out_dir, &file_name)).unwrap();
         let mut writer = BufWriter::with_capacity(BUF_SIZE, write_f);
         // sequence line process
         // read/write a sequence by the line
@@ -73,7 +73,10 @@ fn main() {
     }
 }
 
-fn get_param() -> String {
-    let args: Vec<String> = env::args().collect();
-    return args.into_iter().nth(1).unwrap();
+fn get_param() -> (String, String) {
+    let mut args: Vec<String> = env::args().collect();
+    assert!(args.len() == 3, "Invalid arguments");
+    let out_dir = args.pop().unwrap();
+    let input = args.pop().unwrap();
+    return (input, out_dir);
 }
