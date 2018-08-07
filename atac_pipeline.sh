@@ -25,7 +25,6 @@ for file in $( ls ${dir}/*_L001* ); do
     file_name="$( basename ${file} )"
     merged_file="${tmp}/${file_name/_L001/}"
     for lane_file in $( ls ${file/L001/L*} ); do 
-        echo ${lane_file}
         cat ${lane_file} >> ${merged_file}
     done
     if [ $? -gt 0 ]; then
