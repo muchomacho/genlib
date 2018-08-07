@@ -14,7 +14,7 @@ while getopts "d:o:r:" opt; do
     d) dir=$OPTARG ;;
     o) out=$OPTARG ;;
 	r) ref=$OPTARG ;;
-	[?]) echo "Usage: ${0##*/} [-d sequence file directory] [-o output bam file] [-r reference fasta file]";exit ;;
+	[?]) echo "Usage: ${0##*/} [-d sequence file directory] [-o output file] [-r reference fasta file]";exit ;;
     esac
 done
 
@@ -63,14 +63,14 @@ echo "*** Finished converting samfile into bamfile ***"
 
 ## merge bamfiles
 ls ${tmp}/*.bam > ${tmp}/bam_list.txt
-samtools-1.3.1 merge -b ${tmp}/bam_list.txt ${out}
+samtools-1.3.1 merge -b ${tmp}/bam_list.txt ${out}.bam
 if [ $? -gt 0 ]; then
     error_exit ${tmp} "merging bamfile"
 fi
 echo "*** Finished merging bamfiles ***"
 
 ## convert bamfile into bedfile
-bedtools bamtobed -i ${output} > ${out/bam/bed}
+bedtools bamtobed -i ${out}.bam > ${out}.bed
 if [ $? -gt 0 ]; then
     error_exit ${tmp} "converting bamfile to bedfile"
 fi
