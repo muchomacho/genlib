@@ -36,7 +36,7 @@ echo "*** Finished merging lane fastq files ***"
 ## remove adapter sequence
 counter=1
 for file in $( ls ${tmp}/*R1* ); do
-    NGmerge -1 ${file} -2 ${file/R1/R2} -o ${tmp}/$((counter++))
+    NGmerge -a -1 ${file} -2 ${file/R1/R2} -o ${tmp}/$((counter++))
     if [ $? -gt 0 ]; then
         error_exit ${tmp} "removing adapter"
     fi
