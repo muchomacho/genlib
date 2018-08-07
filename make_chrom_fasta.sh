@@ -6,26 +6,36 @@ shopt -s extglob
 
 while getopts "r:o:" opt; do
     case $opt in
-	r) reference_fasta_file=$OPTARG ;;
-    o) output_fasta_file=$OPTARG ;;
-	[?]) echo "Usage: ${0##*/} [-r reference_fasta_file] [-o output_fasta_file]";exit ;;
+	r) ref=$OPTARG ;;
+    o) out=$OPTARG ;;
+	[?]) echo "Usage: ${0##*/} [-r reference fasta file] [-o output fasta file]";exit ;;
     esac
 done
 
-SRC_DIR="$( cd $( dirname ${BASH_SOURCE[0]} ) >/dev/null && pwd )"
-REF_DIR="$( cd $( dirname ${reference_fasta_file} ) >/dev/null && pwd )"
-OUT_DIR="$( cd $( dirname ${output_fasta_file} ) >/dev/null && pwd )"
+## compile rust file
+rustc -O $( dirname ${0} )/split_fasta.rs
+if [$? -gt 0]; then
+    echo "*** Compilation failed ***"
+    exit 1
+fi
 
-cd $SRC_DIR
-rustc -O split_fasta.rs
-mkdir _tmpdir
-cd _tmpdir
-../split_fasta ${REF_DIR}/$( basename ${reference_fasta_file} )
+mkdir .tmp
+split_fasta ${ref} .tmp
+if [$? -gt 0]; then
+    echo "*** Error occurred at spliting fasta file ***"
+    rm split_fasta
+    rm -r .tmp
+    exit 1
+fi
 
 for num in $( seq 22 ) "X" "Y"; do
-    cat chr${num}.fasta >> ${OUT_DIR}/$( basename ${output_fasta_file} )
+    cat .tmp/chr${num}.fasta >> ${out}
+    if [$? -gt 0]; then
+        echo "*** Error occurred at merging chromosome files"
+        rm split_fasta
+        rm -r .tmp
+        exit 1
 done
 
-cd ..
 rm split_fasta
-rm -r _tmpdir
+rm -r .tmp
