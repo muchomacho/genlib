@@ -32,6 +32,7 @@ for file in $( ls ${dir}/*_L001* ); do
         error_exit ${tmp} "merging same lane file"
     fi
 done
+echo "*** Finished merging lane fastq files ***"
 
 ## remove adapter sequence
 counter=1
@@ -41,6 +42,7 @@ for file in $( ls ${tmp}/*R1* ); do
         error_exit ${tmp} "removing adapter"
     fi
 done
+echo "*** Finished removing adapter ***"
 
 ## mapping reads
 for file in $( ls ${tmp}/*_1* ); do
@@ -49,6 +51,7 @@ for file in $( ls ${tmp}/*_1* ); do
         error_exit ${tmp} "bwa mapping"
     fi
 done
+echo "*** Finished read mapping ***"
 
 ## convert samfile into sorted bamfile
 for file in $( ls ${tmp}/*.sam ); do
@@ -57,6 +60,7 @@ for file in $( ls ${tmp}/*.sam ); do
         error_exit ${tmp} "converting samfile into bamfile"
     fi
 done
+echo "*** Finished converting samfile into bamfile ***"
 
 ## merge bamfiles
 ls ${tmp}/*.bam > ${tmp}/bam_list.txt
@@ -64,12 +68,14 @@ samtools-1.3.1 merge -b ${tmp}/bam_list.txt ${out}
 if [ $? -gt 0 ]; then
     error_exit ${tmp} "merging bamfile"
 fi
+echo "*** Finished merging bamfiles ***"
 
 ## convert bamfile into bedfile
 bedtools bamtobed -i ${output} > ${out/bam/bed}
 if [ $? -gt 0 ]; then
     error_exit ${tmp} "converting bamfile to bedfile"
 fi
+echo "*** Finished converting bamfile into bedfile"
 
 echo "*** Pipeline successfully finished. ***"
 rm -r ${tmp}
