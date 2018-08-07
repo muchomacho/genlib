@@ -9,7 +9,7 @@ function error_exit() {
     exit 1
 }
 
-while getopts "d:r:" opt; do
+while getopts "d:o:r:" opt; do
     case $opt in
     d) dir=$OPTARG ;;
     o) out=$OPTARG ;;
