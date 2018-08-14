@@ -14,6 +14,7 @@
     -r int      Region interval(required)
 
     -t str      Track name(required)
+                If -a option is set, this option is unnecessary.
 
     -d str      Track description(optional)
 
@@ -56,13 +57,13 @@ def parse():
     parser.add_argument('-n', type=str, dest='alt_col', default='0,0,255',
                         help='Negative value color(optional)')
     parser.add_argument('-o', type=str, dest='output_file', default='',
-                        help='Output file(required)')
+                        help='Output file(optional)')
     parser.add_argument('-a', dest='append', action='store_true', help='File append mode(optional)')
     
     args = parser.parse_args()
 
-    if not (args.file and args.chrom and args.resolution, args.name and args.col and args.output_file):
-        print(parser.usage)
+    if not (args.file and args.chrom and args.resolution) or not (args.name or args.append):
+        parser.print_help()
         sys.exit(1)
 
     return (args.file, args.chrom, args.resolution, args.name, args.description, args.col, args.alt_col, args.output_file, args.append)
