@@ -10,9 +10,9 @@ if len(sys.argv) != 2:
 data = pd.read_csv(sys.argv[1])
 
 # 各グループの値をまとめる
-a_group = data.loc[:, "A group"].values.astype(float)
+a_group = data.iloc[:, 0].values.astype(float)
 a_group = a_group[np.isfinite(a_group)]
-b_group = data.loc[:, "B group"].values.astype(float)
+b_group = data.iloc[:, 1].values.astype(float)
 b_group = b_group[np.isfinite(b_group)]
 
 # ウィルコクソン順位和検定
