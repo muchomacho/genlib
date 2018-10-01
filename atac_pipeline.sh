@@ -45,7 +45,7 @@ echo "*** Finished removing adapter ***"
 
 ## mapping reads
 for file in $( ls ${tmp}/*_1* ); do
-    bwa mem -t 32 ${ref} ${file} ${file/_1/_2} > ${file/_1/}.sam
+    bwa mem -t 32 ${ref} ${file} ${file/_1/_2} > ${file/_1.fastq.gz/}.sam
     if [ $? -gt 0 ]; then
         error_exit ${tmp} "bwa mapping"
     fi
