@@ -13,9 +13,9 @@ main = do
 
 extract_values:: String -> Maybe (String, Int)
 extract_values line = let split_words = splitOn "\t" line
+                          region = split_words !! 2                          
                           start = (read::String -> Int) $ split_words !! 3
                           end = (read::String -> Int) $ split_words !! 4
-                          region = split_words !! 2
                           name = (split_words !! 8  =~ "transcript_id \"(N._[0-9]+.[0-9])\"" ::String) =~ "N._[0-9]+.[0-9]" ::String
                       in if region == "exon" 
                             then Just (name, end - start)
