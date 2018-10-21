@@ -11,7 +11,7 @@ main = do
                                                     Nothing -> acc) M.empty $ lines contents
     forM_ result $ putStrLn . (\tuple -> fst tuple ++ "\t" ++ (show $ snd tuple))
 
-extract_values:: String -> Maybe (String, Int)
+extract_values::String -> Maybe (String, Int)
 extract_values line = let split_words = splitOn "\t" line
                           region = split_words !! 2                          
                           start = (read::String -> Int) $ split_words !! 3
@@ -21,7 +21,7 @@ extract_values line = let split_words = splitOn "\t" line
                             then Just (name, end - start)
                             else Nothing
 
-update_length:: (String, Int) -> M.Map String Int -> M.Map String Int
+update_length::(String, Int) -> M.Map String Int -> M.Map String Int
 update_length tuple map = let key = fst tuple
                               val = snd tuple
                           in if M.member key map
