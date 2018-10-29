@@ -36,7 +36,7 @@ use std::io::{stdin, stdout, BufReader, BufWriter, Write};
 
 // read/write buffer size
 // input file size is expected to be very big
-static BUF_SIZE: usize = 100 * 1024 * 1024;
+static BUF_SIZE: usize = 1024 * 1024;
 // expected size of each line is less than 300 bytes
 static LINE_SIZE: usize = 300;
 
@@ -110,7 +110,7 @@ fn main() {
         // create file in output directory about each chromosome
         let file_path = format!("{}/{}.txt", &output_dir, &chrom_name);
         let f = File::create(file_path).unwrap();
-        let mut writer = BufWriter::with_capacity(10 * 1024, f);
+        let mut writer = BufWriter::with_capacity(BUF_SIZE, f);
         for &c in read_count[index].iter() {
             writeln!(&mut writer, "{}", c).unwrap();
         }
