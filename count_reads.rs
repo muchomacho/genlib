@@ -82,19 +82,21 @@ fn main() {
     while reader.read_line(&mut line).unwrap() > 0 {
         {
             let elems: Vec<&str> = line.trim().split_whitespace().collect();
-            let q = elems[4].parse::<usize>().unwrap();
-            // select reads MAPQ >= q_threshold
-            if q >= q_threshold {
-                // increment count of corresponding window
-                let start = elems[1].parse::<usize>().unwrap();
-                let end = elems[2].parse::<usize>().unwrap();
-                let middle = (start + end) / (2 * window);
-                if let Some(&index) = chrom_to_index.get(elems[0]) {
-                    read_count[index][middle] += 1;
+            if elems[0] != "track" && elems[0] != "browser" {
+                let q = elems[4].parse::<usize>().unwrap();
+                // select reads MAPQ >= q_threshold
+                if q >= q_threshold {
+                    // increment count of corresponding window
+                    let start = elems[1].parse::<usize>().unwrap();
+                    let end = elems[2].parse::<usize>().unwrap();
+                    let middle = (start + end) / (2 * window);
+                    if let Some(&index) = chrom_to_index.get(elems[0]) {
+                        read_count[index][middle] += 1;
+                    }
+                    qualified += 1;
                 }
-                qualified += 1;
+                total += 1;
             }
-            total += 1;
         }
         line.clear();
     }
