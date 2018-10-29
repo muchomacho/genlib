@@ -92,6 +92,8 @@ fn main() {
                     let middle = (start + end) / (2 * window);
                     if let Some(&index) = chrom_to_index.get(elems[0]) {
                         read_count[index][middle] += 1;
+                    } else if let Some(&index) = chrom_to_index.get(&format!("chr{}", elems[0])) {
+                        read_count[index][middle] += 1;
                     }
                     qualified += 1;
                 }
