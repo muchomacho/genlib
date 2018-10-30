@@ -11,7 +11,7 @@ def prop_test(t1, n1, t2, n2, kind="two-sided"):
     pooled_p = float((t1 + t2) / (n1 + n2))
 
     if pooled_p == 0.0 or pooled_p == 1.0:
-        return 0.0
+        return 1.0
     statistic = (p1 - p2) / np.sqrt(pooled_p * (1.0 - pooled_p) * (1.0 / n1 + 1.0 / n2))
     prop = norm.cdf(statistic)
 
@@ -19,7 +19,7 @@ def prop_test(t1, n1, t2, n2, kind="two-sided"):
         if prop > 0.5:
             return 1.0 - 2.0 * (1.0 - prop)
         else:
-            return 1.0 - 2.0 * (1.0 - prop)
+            return 1.0 - 2.0 * prop
     elif kind == "greater":
         return 1.0 - prop
     else:
