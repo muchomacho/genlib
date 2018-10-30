@@ -34,16 +34,16 @@ if __name__ == "__main__":
 
     dir1 = sys.argv[1]
     dir2 = sys.argv[2]
-    ref = sys.argv[3]
-    if ref not in ("hg19", "hg38"):
+    reference = sys.argv[3]
+    if reference not in ("hg19", "hg38"):
         print("Unknown reference.")
         sys.exit(1)
-    res = int(sys.argv[4])
+    resolution = int(sys.argv[4])
     threshold = float(sys.argv[5])
     out = sys.argv[6]
 
     chrom_length = []
-    with open("{}/data/{}_chrom_size.txt".format(os.path.dirname(sys.argv[0]), ref), "r") as f:
+    with open("{}/data/{}_chrom_size.txt".format(os.path.dirname(sys.argv[0]), reference), "r") as f:
         chrom_length = [int(line.strip().split("\t")[1]) for line in f]
     chrom_names = ["chr" + str(i) for i in range(1, 23)] + ["chrX", "chrY"]
 
