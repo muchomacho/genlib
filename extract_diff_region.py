@@ -75,8 +75,4 @@ if __name__ == "__main__":
     significant_regions = results.loc[results.adjusted_pval < threshold, ["chr", "start", "end"]]
     significant_regions.to_csv(out, index=False, header=False, sep="\t")
 
-    related_regions = results.loc[results.pval < threshold, ["chr", "start", "end"]]
-    related_regions.to_csv(re.sub("\.", "_related.", out), index=False, header=False, sep="\t")
-
-
     results.to_csv(re.sub("\.\w+", "_stats.csv", out), index=False)
