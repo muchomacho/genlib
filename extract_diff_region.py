@@ -52,7 +52,7 @@ if __name__ == "__main__":
     total_reads2 = 0
     counts1 = []
     counts2 = []
-    for i in range(1, 25):
+    for i in range(24):
         with open("{}/{}.txt".format(dir1, chrom_names[i]), "r") as f:
             count = np.array([int(x.strip()) for x in f])
             total_reads1 += np.sum(count)
@@ -61,11 +61,11 @@ if __name__ == "__main__":
             count = np.array([int(x.strip()) for x in f])
             total_reads2 += np.sum(count)
             counts2.append(count)
-        assert len(counts1[i - 1]) == len(counts2[i - 1]), "the lengths of two array must be equal."
-        total_test += len(counts1[i - 1])
+        assert len(counts1[i]) == len(counts2[i]), "the lengths of two array must be equal."
+        total_test += len(counts1[i])
     
     results = []
-    for i in range(1, 25):
+    for i in range(24):
         for j in range(len(counts1[i])):
             pval = prop_test(counts1[i][j], total_reads1, counts2[i][j], total_reads2)
             adjusted_pval = p-val / total_test
