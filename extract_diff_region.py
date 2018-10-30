@@ -72,7 +72,7 @@ if __name__ == "__main__":
             results.append([chrom_names[i], j * resolution, min((j + 1) * resolution, chrom_length[i]), pval, adjusted_pval])
     results = pd.DataFrame(results, columns=["chr", "start", "end", "pval", "adjusted_pval"])
 
-    significant_regions = results.loc[results.adjusted_pval < threshold, ["chr", "start", "end"]]
-    significant_regions.to_csv(out, index=False, header=False, sep="\t")
+    significant_regions = results.loc[results.adjusted_pval < threshold].sort_values(by=["adjusted_pval"])
+    significant_regions.to_csv(out, columns=["chr", "start", "end"], index=False, header=False, sep="\t")
 
     results.to_csv(re.sub("\.\w+", "_stats.csv", out), index=False)
