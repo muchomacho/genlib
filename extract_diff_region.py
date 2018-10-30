@@ -43,7 +43,7 @@ if __name__ == "__main__":
     out = sys.argv[6]
 
     chrom_length = []
-    with open("{}/data/{}.txt".format(os.path.dirname(sys.argv[0]), ref), "r") as f:
+    with open("{}/data/{}_chrom_size.txt".format(os.path.dirname(sys.argv[0]), ref), "r") as f:
         chrom_length = [int(line.strip().split("\t")[1]) for line in f]
     chrom_names = ["chr" + str(i) for i in range(1, 23)] + ["chrX", "chrY"]
 
