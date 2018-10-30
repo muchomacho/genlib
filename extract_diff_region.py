@@ -61,8 +61,7 @@ if __name__ == "__main__":
             count = np.array([int(x.strip()) for x in f])
             total_reads2 += np.sum(count)
             counts2.append(count)
-        print(total_reads1, total_reads2, counts1, counts2)
-        assert len(counts1[i]) == len(counts2[i]), "the lengths of two array must be equal."
+        assert len(counts1[i - 1]) == len(counts2[i - 1]), "the lengths of two array must be equal."
         total_test += len(counts1[i])
     
     results = []
