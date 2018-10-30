@@ -35,7 +35,7 @@ if __name__ == "__main__":
     dir1 = sys.argv[1]
     dir2 = sys.argv[2]
     ref = sys.argv[3]
-    if ref in ("hg19", "hg38"):
+    if ref not in ("hg19", "hg38"):
         print("Unknown reference.")
         sys.exit(1)
     res = int(sys.argv[4])
