@@ -68,7 +68,7 @@ if __name__ == "__main__":
     for i in range(24):
         for j in range(len(counts1[i])):
             pval = prop_test(counts1[i][j], total_reads1, counts2[i][j], total_reads2)
-            adjusted_pval = p-val / total_test
+            adjusted_pval = pval / total_test
             diff.append([chrom_names[i], j * resolution, min((j + 1) * resolution, chrom_length[i]), pval, adjusted_pval])
     results = pd.DataFrame(diff, columns=["chr", "start", "end", "pval", "adjusted_pval"])
 
