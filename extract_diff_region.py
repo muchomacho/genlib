@@ -17,9 +17,9 @@ def prop_test(t1, n1, t2, n2, kind="two-sided"):
 
     if kind == "two-sided":
         if prop > 0.5:
-            return 1.0 - 2.0 * (1.0 - prop)
+            return 2.0 * (1.0 - prop)
         else:
-            return 1.0 - 2.0 * prop
+            return 2.0 * prop
     elif kind == "greater":
         return 1.0 - prop
     else:
