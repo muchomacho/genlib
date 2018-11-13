@@ -36,6 +36,8 @@ if __name__ == "__main__":
     gene_count_file2 = sys.argv[2]
     threshold = float(sys.argv[3])
     out = sys.argv[4]
+    if ".csv" not in out:
+        out += ".csv"
 
     with open(gene_count_file1, 'r') as f:
         gene_counts1 = dict()
@@ -66,6 +68,4 @@ if __name__ == "__main__":
     significant_regions = results[results.adjusted_pval < threshold].sort_values(by=["adjusted_pval"])
     significant_regions.to_csv(out, index=False)
 
-    if ".csv" not in out:
-        out += ".csv"
     results.to_csv(re.sub("\.\w+", "_stats.csv", out), index=False)
