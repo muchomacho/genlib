@@ -60,7 +60,7 @@ if __name__ == "__main__":
         val2 = gene_counts2[gene]
         pval = prop_test(val1, total_reads1, val2, total_reads2)
         adjusted_pval = pval * total_test
-        results.append(gene, "greater" if val1 > val2 else "less", pval, adjusted_pval)
+        results.append([gene, "greater" if val1 < val2 else "less", pval, adjusted_pval])
     results = pd.DataFrame(results, columns=["gene", "type", "pval", "adjusted_pval"])
 
     significant_regions = results[results.adjusted_pval < threshold].sort_values(by=["adjusted_pval"])
