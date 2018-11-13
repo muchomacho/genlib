@@ -38,11 +38,17 @@ if __name__ == "__main__":
     out = sys.argv[4]
 
     with open(gene_count_file1, 'r') as f:
-        gene_counts1 = dict([tuple(line.strip().split()[0:2]) for line in f])
+        gene_counts1 = dict()
+        for line in f:
+            vals = line.strip().split()
+            gene_counts1[vals[0]] = int(vals[1])
         genes1 = set(gene_counts1.keys())
         total_reads1 = sum(gene_counts1.values())
     with open(gene_count_file2, 'r') as f:
-        gene_counts2 = dict([tuple(line.strip().split()[0:2]) for line in f])
+        gene_counts2 = dict()
+        for line in f:
+            vals = line.strip().split()
+            gene_counts2[vals[0]] = int(vals[1])
         genes2 = set(gene_counts2.keys())
         total_reads2 = sum(gene_counts2.values())
     intersect_genes = genes1 & genes2
