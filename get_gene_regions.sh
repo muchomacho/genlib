@@ -1,4 +1,4 @@
-#!bin/sh
+#!/bin/bash
 
 # This script extracts genomic regions of target genes by bed format
 # output: standard output
