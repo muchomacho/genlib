@@ -8,6 +8,8 @@ if len(sys.argv) != 2:
     print("Invalid arguments")
     sys.exit(-1)
 data = pd.read_csv(sys.argv[1])
+data.iloc[:, 0] = pd.to_numeric(data.iloc[:, 0], errors="coerce")
+data.iloc[:, 1] = pd.to_numeric(data.iloc[:, 1], errors="coerce")
 
 # 各グループの値をまとめる
 a_group = data.iloc[:, 0].values.astype(float)
