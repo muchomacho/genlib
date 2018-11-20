@@ -16,7 +16,7 @@ fn main() {
     let args:Vec<String> = env::args().collect();
     let (file1, file2) = (&args[1], &args[2]);
     let (mut regions1, mut regions2) = (read_bed(file1), read_bed(file2));
-    let (chroms1, chroms2) = (regions1.keys().cloned().collect::<BTreeSet<_>>(), regions1.keys().cloned().collect::<BTreeSet<_>>());
+    let (chroms1, chroms2) = (regions1.keys().cloned().collect::<BTreeSet<_>>(), regions2.keys().cloned().collect::<BTreeSet<_>>());
     let common_chroms: Vec<_> = chroms1.intersection(&chroms2).cloned().collect();
     let mut results = BTreeMap::new();
     for chrom in common_chroms.iter() {
@@ -69,7 +69,6 @@ fn read_bed(file_path: &str) -> BTreeMap<String, (usize, usize, Vec<(usize, usiz
     while reader.read_line(&mut line).unwrap() > 0 {
         {
             let vals: Vec<&str> = line.trim().split_whitespace().collect();
-            println!("{:?}", vals);
             let chrom = vals[0].to_string();
             let start = vals[1].parse::<usize>().unwrap();
             let end = vals[2].parse::<usize>().unwrap();
