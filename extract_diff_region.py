@@ -68,9 +68,9 @@ if __name__ == "__main__":
     for i in range(24):
         for j in range(len(counts1[i])):
             pval = prop_test(counts1[i][j], total_reads1, counts2[i][j], total_reads2)
-            adjusted_pval = pval * total_test
-            results.append([chrom_names[i], j * resolution, min((j + 1) * resolution, chrom_length[i]), pval, adjusted_pval])
-    results = pd.DataFrame(results, columns=["chr", "start", "end", "pval", "adjusted_pval"])
+            adjusted_pval = max(pval * total_test, 1.0)
+            results.append([chrom_names[i], j * resolution, min((j + 1) * resolution, chrom_length[i]), counts1[i][j], counts2[i][j], pval, adjusted_pval])
+    results = pd.DataFrame(results, columns=["chr", "start", "end", "val1", "val2", "pval", "adjusted_pval"])
 
     significant_regions = results.loc[results.adjusted_pval < threshold].sort_values(by=["adjusted_pval"])
     significant_regions.to_csv(out, columns=["chr", "start", "end"], index=False, header=False, sep="\t")

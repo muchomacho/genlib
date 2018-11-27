@@ -61,9 +61,9 @@ if __name__ == "__main__":
         val1 = gene_counts1[gene]
         val2 = gene_counts2[gene]
         pval = prop_test(val1, total_reads1, val2, total_reads2)
-        adjusted_pval = pval * total_test
-        results.append([gene, "greater" if val1 < val2 else "less", pval, adjusted_pval])
-    results = pd.DataFrame(results, columns=["gene", "type", "pval", "adjusted_pval"])
+        adjusted_pval = max(pval * total_test, 1.0)
+        results.append([gene, "greater" if val1 < val2 else "less", val1, val2, pval, adjusted_pval])
+    results = pd.DataFrame(results, columns=["gene", "type", "val1", "val2", "pval", "adjusted_pval"])
 
     significant_regions = results[results.adjusted_pval < threshold].sort_values(by=["adjusted_pval"])
     significant_regions.to_csv(out, index=False)
